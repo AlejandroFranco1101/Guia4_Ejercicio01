@@ -1,8 +1,10 @@
 package com.example.guia4
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -11,11 +13,18 @@ import androidx.core.content.ContextCompat
 class MainActivity : AppCompatActivity() {
     private val TAG = "Guia4-Permisos"
     private val CODIGO_SOLICITUD_GRABAR = 101
+
+    lateinit var btnCamera: Button
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         // Comprobación de permisos
         configurarPermiso()
+        btnCamera = findViewById(R.id.btnCamara)
+        btnCamera.setOnClickListener {
+            val intent = Intent(this, CamaraActivity::class.java)
+            startActivity(intent)
+        }
     }
     // 1. Comprobar estado permiso
     private fun comprobarEstadoPermiso() {
