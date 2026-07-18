@@ -4,6 +4,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -14,7 +15,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         // Comprobación de permisos
-        comprobarEstadoPermiso()
+        configurarPermiso()
     }
     // 1. Comprobar estado permiso
     private fun comprobarEstadoPermiso() {
@@ -29,6 +30,33 @@ class MainActivity : AppCompatActivity() {
 
 
     // 2. Configurar permisos
+    private fun configurarPermiso() {
+        val estadoPermiso = ContextCompat.checkSelfPermission(
+            this,
+            android.Manifest.permission.RECORD_AUDIO
+        )
+        if (estadoPermiso != PackageManager.PERMISSION_GRANTED) {
+            Log.i(TAG, getString(R.string.permiso_audio_denegado))
+            val mostrarRequest = ActivityCompat.shouldShowRequestPermissionRationale(
+                this,
+                android.Manifest.permission.RECORD_AUDIO
+            );
+            if (mostrarRequest) {
+                val builder = AlertDialog.Builder(this)
+                builder.setMessage(getString(R.string.permiso_audio_requerido))
+                    .setTitle("Permiso requirido")
+                builder.setPositiveButton("OK") { _, _ ->
+                    Log.i(TAG, "Seleccionado")
+                    solicitudPermiso()
+                }
+                builder.setNegativeButton("Cancelar", null)
+                val dialog = builder.create()
+                dialog.show()
+            } else {
+                solicitudPermiso()
+            }
+        }
+    }
 
     // 3. Solicitud de permiso
     private fun solicitudPermiso() {
